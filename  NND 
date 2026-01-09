@@ -1,0 +1,70 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyOkoJ5W+TXTOs1xfMkrLR1X",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/DeepaSuresh16/LLM/blob/main/%20NND%20\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "gT3qiDwJCU-T"
+      },
+      "outputs": [],
+      "source": [
+        "!pip install transformers torch scikit-learn\n",
+        "import torch\n",
+        "from transformers import AutoTokenizer, AutoModel\n",
+        "from sklearn.metrics.pairwise import cosine_similarity\n",
+        "\n",
+        "# Load pre-trained Sentence Transformer\n",
+        "model_name = \"sentence-transformers/all-MiniLM-L6-v2\"\n",
+        "tokenizer = AutoTokenizer.from_pretrained(model_name)\n",
+        "model = AutoModel.from_pretrained(model_name)\n",
+        "\n",
+        "def get_embedding(text):\n",
+        "    inputs = tokenizer(text, return_tensors=\"pt\", padding=True, truncation=True)\n",
+        "    with torch.no_grad():\n",
+        "        outputs = model(**inputs)\n",
+        "    embeddings = outputs.last_hidden_state.mean(dim=1)\n",
+        "    return embeddings\n",
+        "\n",
+        "# Example sentences\n",
+        "text1 = \"I love machine learning\"\n",
+        "text2 = \"I enjoy studying artificial intelligence\"\n",
+        "\n",
+        "# Generate embeddings\n",
+        "emb1 = get_embedding(text1)\n",
+        "emb2 = get_embedding(text2)\n",
+        "\n",
+        "# Cosine similarity\n",
+        "similarity = cosine_similarity(emb1, emb2)\n",
+        "\n",
+        "print(\"Text Similarity Score:\", similarity[0][0])\n",
+        "\n"
+      ]
+    }
+  ]
+}
